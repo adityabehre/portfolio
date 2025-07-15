@@ -66,8 +66,7 @@ const Hero = () => {
     <>
       <p>
         I’m interested in machine learning, full stack development, and finance. Currently, I’m
-        looking for New Grad software engineering roles. Please feel free to reach out with any
-        questions!
+        looking for New Grad software engineering roles. Please feel free to reach out with any questions!
       </p>
     </>
   );

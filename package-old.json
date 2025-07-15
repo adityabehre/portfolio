@@ -2,10 +2,10 @@
   "name": "v4",
   "description": "Personal Website V4",
   "version": "1.0.0",
-  "author": "Aditya Behre <aditya.behre@utexas.edu>",
+  "author": "Brittany Chiang <brittany.chiang@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adityabehre/portfolio"
+    "url": "https://github.com/bchiang7/v4"
   },
   "keywords": [
     "gatsby"
@@ -19,7 +19,7 @@
     "start": "npm run develop",
     "serve": "gatsby serve",
     "clean": "gatsby clean",
-    "prepare": "husky",
+    "prepare": "husky install",
     "lint-staged": "lint-staged"
   },
   "lint-staged": {
@@ -32,22 +32,24 @@
   },
   "dependencies": {
     "animejs": "^3.2.2",
-    "gatsby": "^5.14.5",
-    "gatsby-plugin-image": "^3.14.0",
-    "gatsby-plugin-manifest": "^5.14.0",
-    "gatsby-plugin-netlify": "^5.1.1",
-    "gatsby-plugin-react-helmet": "^6.14.0",
-    "gatsby-plugin-robots-txt": "^1.8.0",
-    "gatsby-plugin-sharp": "^5.14.0",
-    "gatsby-plugin-sitemap": "^6.14.0",
-    "gatsby-plugin-styled-components": "^6.14.0",
-    "gatsby-remark-code-titles": "^1.1.0",
+    "babel-plugin-styled-components": "^2.1.4",
+    "gatsby": "^3.3.1",
+    "gatsby-plugin-google-analytics": "^3.15.0",
+    "gatsby-plugin-image": "^1.15.0",
+    "gatsby-plugin-manifest": "^3.15.0",
+    "gatsby-plugin-netlify": "^3.14.0",
+    "gatsby-plugin-offline": "^4.15.0",
+    "gatsby-plugin-react-helmet": "^4.15.0",
+    "gatsby-plugin-robots-txt": "^1.7.1",
+    "gatsby-plugin-sharp": "^3.15.0",
+    "gatsby-plugin-sitemap": "^4.11.0",
+    "gatsby-plugin-styled-components": "^4.15.0",
     "gatsby-remark-external-links": "^0.0.4",
-    "gatsby-remark-images": "^7.14.0",
-    "gatsby-remark-prismjs": "^7.14.0",
-    "gatsby-source-filesystem": "^5.14.0",
-    "gatsby-transformer-remark": "^6.14.0",
-    "gatsby-transformer-sharp": "^5.14.0",
+    "gatsby-remark-images": "^5.12.0",
+    "gatsby-remark-prismjs": "^5.12.0",
+    "gatsby-source-filesystem": "^3.15.0",
+    "gatsby-transformer-remark": "^4.12.0",
+    "gatsby-transformer-sharp": "^3.15.0",
     "lodash": "^4.17.21",
     "prismjs": "^1.29.0",
     "prop-types": "^15.8.1",
@@ -58,18 +60,16 @@
     "scrollreveal": "^4.0.9",
     "styled-components": "^6.1.19"
   },
-  "overrides": {
-    "path-to-regexp": "^0.1.12",
-    "cookie": "^0.7.2"
-  },
   "devDependencies": {
     "@babel/core": "^7.26.0",
     "@babel/eslint-parser": "^7.26.0",
     "@babel/preset-react": "^7.26.0",
-    "eslint": "^9.17.0",
+    "babel-preset-gatsby": "^3.14.0",
+    "eslint": "^8.57.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-react": "^7.37.2",
+    "gatsby-remark-code-titles": "^1.1.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.2",
     "prettier": "^3.6.2"
