@@ -75,7 +75,7 @@ const StyledTabButton = styled.button`
   padding: 0 20px 2px;
   border-left: 2px solid var(--lightest-navy);
   background-color: transparent;
-  color: ${({ isActive }) => (isActive ? 'var(--green)' : 'var(--slate)')};
+  color: ${props => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
   text-align: left;
@@ -164,12 +164,41 @@ const StyledTabPanel = styled.div`
   }
 `;
 
+const StyledSubTabs = styled.div`
+  margin-bottom: 20px;
+
+  .sub-tab-list {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--lightest-navy);
+  }
+
+  .sub-tab-button {
+    ${({ theme }) => theme.mixins.link};
+    padding: 8px 12px;
+    border: none;
+    background: transparent;
+    color: ${props => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
+    font-family: var(--font-mono);
+    font-size: var(--fz-xs);
+    border-bottom: 2px solid
+      ${props => (props['data-active'] === true ? 'var(--green)' : 'transparent')};
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+
+    &:hover {
+      color: var(--green);
+    }
+  }
+`;
+
 const Jobs = () => {
   const data = useStaticQuery(graphql`
     query {
       jobs: allMarkdownRemark(
         filter: { fileAbsolutePath: { regex: "/content/jobs/" } }
-        sort: { fields: [frontmatter___date], order: DESC }
+        sort: { frontmatter: { date: DESC } }
       ) {
         edges {
           node {
@@ -179,6 +208,7 @@ const Jobs = () => {
               location
               range
               url
+              parent
             }
             html
           }
@@ -189,7 +219,26 @@ const Jobs = () => {
 
   const jobsData = data.jobs.edges;
 
+  // Group Wells Fargo jobs and separate others
+  const wellsFargoJobs = jobsData.filter(({ node }) => node.frontmatter.parent === 'Wells Fargo');
+  const otherJobs = jobsData.filter(({ node }) => !node.frontmatter.parent);
+
+  // Create main tabs data (Wells Fargo as one tab, others individual)
+  const mainTabs = [
+    {
+      company: 'Wells Fargo',
+      isGroup: true,
+      jobs: wellsFargoJobs,
+    },
+    ...otherJobs.map(job => ({
+      company: job.node.frontmatter.company,
+      isGroup: false,
+      jobs: [job],
+    })),
+  ];
+
   const [activeTabId, setActiveTabId] = useState(0);
+  const [activeSubTabId, setActiveSubTabId] = useState(0);
   const [tabFocus, setTabFocus] = useState(null);
   const tabs = useRef([]);
   const revealContainer = useRef(null);
@@ -242,37 +291,50 @@ const Jobs = () => {
     }
   };
 
+  // Reset sub-tab when main tab changes
+  useEffect(() => {
+    setActiveSubTabId(0);
+  }, [activeTabId]);
+
   return (
     <StyledJobsSection id="jobs" ref={revealContainer}>
       <h2 className="numbered-heading">Where I’ve Worked</h2>
 
       <div className="inner">
         <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
-          {jobsData &&
-            jobsData.map(({ node }, i) => {
-              const { company } = node.frontmatter;
-              return (
-                <StyledTabButton
-                  key={i}
-                  isActive={activeTabId === i}
-                  onClick={() => setActiveTabId(i)}
-                  ref={el => (tabs.current[i] = el)}
-                  id={`tab-${i}`}
-                  role="tab"
-                  tabIndex={activeTabId === i ? '0' : '-1'}
-                  aria-selected={activeTabId === i ? true : false}
-                  aria-controls={`panel-${i}`}>
-                  <span>{company}</span>
-                </StyledTabButton>
-              );
-            })}
+          {mainTabs &&
+            mainTabs.map((tab, i) => (
+              <StyledTabButton
+                key={i}
+                data-active={activeTabId === i}
+                onClick={() => setActiveTabId(i)}
+                ref={el => (tabs.current[i] = el)}
+                id={`tab-${i}`}
+                role="tab"
+                tabIndex={activeTabId === i ? '0' : '-1'}
+                aria-selected={activeTabId === i ? true : false}
+                aria-controls={`panel-${i}`}
+              >
+                <span>{tab.company}</span>
+              </StyledTabButton>
+            ))}
           <StyledHighlight activeTabId={activeTabId} />
         </StyledTabList>
 
         <StyledTabPanels>
-          {jobsData &&
-            jobsData.map(({ node }, i) => {
-              const { frontmatter, html } = node;
+          {mainTabs &&
+            mainTabs.map((tab, i) => {
+              const currentTab = mainTabs[activeTabId];
+              const isWellsFargo = currentTab?.isGroup;
+              const currentJob = isWellsFargo
+                ? currentTab.jobs[activeSubTabId]?.node
+                : currentTab.jobs[0]?.node;
+
+              if (!currentJob) {
+                return null;
+              }
+
+              const { frontmatter, html } = currentJob;
               const { title, url, company, range } = frontmatter;
 
               return (
@@ -283,7 +345,32 @@ const Jobs = () => {
                     tabIndex={activeTabId === i ? '0' : '-1'}
                     aria-labelledby={`tab-${i}`}
                     aria-hidden={activeTabId !== i}
-                    hidden={activeTabId !== i}>
+                    hidden={activeTabId !== i}
+                  >
+                    {isWellsFargo && (
+                      <StyledSubTabs>
+                        <div className="sub-tab-list">
+                          {currentTab.jobs.map((job, subIndex) => (
+                            <button
+                              key={subIndex}
+                              className="sub-tab-button"
+                              data-active={activeSubTabId === subIndex}
+                              onClick={() => setActiveSubTabId(subIndex)}
+                              style={{
+                                color:
+                                  activeSubTabId === subIndex ? 'var(--green)' : 'var(--slate)',
+                                borderBottomColor:
+                                  activeSubTabId === subIndex ? 'var(--green)' : 'transparent',
+                              }}
+                            >
+                              {job.node.frontmatter.range.split(' - ')[0].split(' ')[1]}{' '}
+                              {/* Extract year */}
+                            </button>
+                          ))}
+                        </div>
+                      </StyledSubTabs>
+                    )}
+
                     <h3>
                       <span>{title}</span>
                       <span className="company">

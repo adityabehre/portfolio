@@ -1,13 +1,11 @@
 const config = require('./src/config');
-
 module.exports = {
   siteMetadata: {
-    title: 'Brittany Chiang',
+    title: 'Aditya Behre | UT Austin CS & Math Student',
     description:
-      'Brittany Chiang is a software engineer who specializes in building (and occasionally designing) exceptional digital experiences.',
-    siteUrl: 'https://brittanychiang.com', // No trailing slash allowed!
-    image: '/og.png', // Path to your image you placed in the 'static' folder
-    twitterUsername: '@bchiang7',
+      'Portfolio of Aditya Behre, Computer Science and Mathematics student at The University of Texas at Austin. Explore projects, blog posts, and contact information.',
+    siteUrl: 'https://adityabehre.com', // No trailing slash allowed!
+    image: '/og-image.jpg', // Place og-image.jpg in the 'static' folder
   },
   plugins: [
     `gatsby-plugin-react-helmet`,
@@ -20,8 +18,8 @@ module.exports = {
     {
       resolve: `gatsby-plugin-manifest`,
       options: {
-        name: 'Brittany Chiang',
-        short_name: 'Brittany Chiang',
+        name: 'Aditya Behre',
+        short_name: 'Adi Behre',
         start_url: '/',
         background_color: config.colors.darkNavy,
         theme_color: config.colors.navy,
