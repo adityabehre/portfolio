@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import styled from 'styled-components';
 import { navDelay, loaderDelay } from '@utils';
@@ -65,8 +65,9 @@ const Hero = () => {
   const four = (
     <>
       <p>
-        I’m interested in machine learning, full stack development, and finance. Currently, I’m
-        looking for New Grad software engineering roles. Please feel free to reach out with any questions!
+        I'm interested in machine learning, full stack development, and finance. Currently, I'm
+        looking for New Grad Software Engineering roles. Please feel free to reach out with any
+        questions!
       </p>
     </>
   );
