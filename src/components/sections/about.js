@@ -138,7 +138,7 @@ const About = () => {
               Hi! I'm Adi, a rising senior at UT studying Computer Science and Math. When I'm not in
               class, you might just find me at a local Chipotle or Thai restaurant, depending on
               whether I'm in Austin or Dallas. I enjoy playing pickleball, watching movies, and
-              following the financial market.
+              following the U.S. financial market.
             </p>
 
             {/* <p>
