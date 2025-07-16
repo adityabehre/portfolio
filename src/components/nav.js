@@ -32,8 +32,8 @@ const StyledHeader = styled.header`
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    ${props =>
-    props.scrollDirection === 'up' &&
+    ${(props) =>
+      props.scrollDirection === 'up' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
@@ -42,8 +42,8 @@ const StyledHeader = styled.header`
         box-shadow: 0 10px 30px -10px var(--navy-shadow);
       `};
 
-    ${props =>
-    props.scrollDirection === 'down' &&
+    ${(props) =>
+      props.scrollDirection === 'down' &&
       !props.scrolledToTop &&
       css`
         height: var(--nav-scroll-height);
@@ -175,7 +175,7 @@ const Nav = ({ isHome }) => {
       clearTimeout(timeout);
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [prefersReducedMotion]);
 
   const timeout = isHome ? loaderDelay : 0;
   const fadeClass = isHome ? 'fade' : '';

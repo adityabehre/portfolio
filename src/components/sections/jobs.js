@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useStaticQuery, graphql } from 'gatsby';
 import { CSSTransition } from 'react-transition-group';
 import styled from 'styled-components';
@@ -75,7 +75,7 @@ const StyledTabButton = styled.button`
   padding: 0 20px 2px;
   border-left: 2px solid var(--lightest-navy);
   background-color: transparent;
-  color: ${props => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
+  color: ${(props) => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
   font-family: var(--font-mono);
   font-size: var(--fz-xs);
   text-align: left;
@@ -179,11 +179,11 @@ const StyledSubTabs = styled.div`
     padding: 8px 12px;
     border: none;
     background: transparent;
-    color: ${props => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
+    color: ${(props) => (props['data-active'] === true ? 'var(--green)' : 'var(--slate)')};
     font-family: var(--font-mono);
     font-size: var(--fz-xs);
     border-bottom: 2px solid
-      ${props => (props['data-active'] === true ? 'var(--green)' : 'transparent')};
+      ${(props) => (props['data-active'] === true ? 'var(--green)' : 'transparent')};
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
 
@@ -230,7 +230,7 @@ const Jobs = () => {
       isGroup: true,
       jobs: wellsFargoJobs,
     },
-    ...otherJobs.map(job => ({
+    ...otherJobs.map((job) => ({
       company: job.node.frontmatter.company,
       isGroup: false,
       jobs: [job],
@@ -250,9 +250,9 @@ const Jobs = () => {
     }
 
     sr.reveal(revealContainer.current, srConfig());
-  }, []);
+  }, [prefersReducedMotion]);
 
-  const focusTab = () => {
+  const focusTab = useCallback(() => {
     if (tabs.current[tabFocus]) {
       tabs.current[tabFocus].focus();
       return;
@@ -265,13 +265,13 @@ const Jobs = () => {
     if (tabFocus < 0) {
       setTabFocus(tabs.current.length - 1);
     }
-  };
+  }, [tabFocus]);
 
   // Only re-run the effect if tabFocus changes
-  useEffect(() => focusTab(), [tabFocus]);
+  useEffect(() => focusTab(), [tabFocus, focusTab]);
 
   // Focus on tabs when using up & down arrow keys
-  const onKeyDown = e => {
+  const onKeyDown = (e) => {
     switch (e.key) {
       case KEY_CODES.ARROW_UP: {
         e.preventDefault();
@@ -301,14 +301,14 @@ const Jobs = () => {
       <h2 className="numbered-heading">Where I’ve Worked</h2>
 
       <div className="inner">
-        <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={e => onKeyDown(e)}>
+        <StyledTabList role="tablist" aria-label="Job tabs" onKeyDown={(e) => onKeyDown(e)}>
           {mainTabs &&
             mainTabs.map((tab, i) => (
               <StyledTabButton
                 key={i}
                 data-active={activeTabId === i}
                 onClick={() => setActiveTabId(i)}
-                ref={el => (tabs.current[i] = el)}
+                ref={(el) => (tabs.current[i] = el)}
                 id={`tab-${i}`}
                 role="tab"
                 tabIndex={activeTabId === i ? '0' : '-1'}

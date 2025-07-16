@@ -123,7 +123,7 @@ const About = () => {
     }
 
     sr.reveal(revealContainer.current, srConfig());
-  }, []);
+  }, [prefersReducedMotion]);
 
   const skills = ['Python', 'C++', 'React', 'Node.js', 'backtrader', 'JUCE'];
 

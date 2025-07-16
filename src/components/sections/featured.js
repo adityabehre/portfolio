@@ -352,7 +352,7 @@ const Featured = () => {
 
     sr.reveal(revealTitle.current, srConfig());
     revealProjects.current.forEach((ref, i) => sr.reveal(ref, srConfig(i * 100)));
-  }, []);
+  }, [prefersReducedMotion]);
 
   return (
     <section id="projects">
@@ -367,7 +367,7 @@ const Featured = () => {
             const { external, title, tech, github } = frontmatter;
 
             return (
-              <StyledProject key={i} ref={el => (revealProjects.current[i] = el)}>
+              <StyledProject key={i} ref={(el) => (revealProjects.current[i] = el)}>
                 <div className="project-content">
                   <div>
                     <p className="project-overline">Featured Project</p>

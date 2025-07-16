@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Helmet } from 'react-helmet';
 import { Link } from 'gatsby';
 import styled from 'styled-components';
@@ -49,10 +49,10 @@ const StyledHamburgerButton = styled.button`
     background-color: var(--green);
     transition-duration: 0.22s;
     transition-property: transform;
-    transition-delay: ${props => (props.menuOpen ? `0.12s` : `0s`)};
-    transform: rotate(${props => (props.menuOpen ? `225deg` : `0deg`)});
+    transition-delay: ${(props) => (props.menuOpen ? `0.12s` : `0s`)};
+    transform: rotate(${(props) => (props.menuOpen ? `225deg` : `0deg`)});
     transition-timing-function: cubic-bezier(
-      ${props => (props.menuOpen ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`)}
+      ${(props) => (props.menuOpen ? `0.215, 0.61, 0.355, 1` : `0.55, 0.055, 0.675, 0.19`)}
     );
     &:before,
     &:after {
@@ -70,16 +70,16 @@ const StyledHamburgerButton = styled.button`
       transition-property: transform;
     }
     &:before {
-      width: ${props => (props.menuOpen ? `100%` : `120%`)};
-      top: ${props => (props.menuOpen ? `0` : `-10px`)};
-      opacity: ${props => (props.menuOpen ? 0 : 1)};
+      width: ${(props) => (props.menuOpen ? `100%` : `120%`)};
+      top: ${(props) => (props.menuOpen ? `0` : `-10px`)};
+      opacity: ${(props) => (props.menuOpen ? 0 : 1)};
       transition: ${({ menuOpen }) =>
-    menuOpen ? 'var(--ham-before-active)' : 'var(--ham-before)'};
+        menuOpen ? 'var(--ham-before-active)' : 'var(--ham-before)'};
     }
     &:after {
-      width: ${props => (props.menuOpen ? `100%` : `80%`)};
-      bottom: ${props => (props.menuOpen ? `0` : `-10px`)};
-      transform: rotate(${props => (props.menuOpen ? `-90deg` : `0`)});
+      width: ${(props) => (props.menuOpen ? `100%` : `80%`)};
+      bottom: ${(props) => (props.menuOpen ? `0` : `-10px`)};
+      transform: rotate(${(props) => (props.menuOpen ? `-90deg` : `0`)});
       transition: ${({ menuOpen }) => (menuOpen ? 'var(--ham-after-active)' : 'var(--ham-after)')};
     }
   }
@@ -101,8 +101,8 @@ const StyledSidebar = styled.aside`
     background-color: var(--light-navy);
     box-shadow: -10px 0px 30px -15px var(--navy-shadow);
     z-index: 9;
-    transform: translateX(${props => (props.menuOpen ? 0 : 100)}vw);
-    visibility: ${props => (props.menuOpen ? 'visible' : 'hidden')};
+    transform: translateX(${(props) => (props.menuOpen ? 0 : 100)}vw);
+    visibility: ${(props) => (props.menuOpen ? 'visible' : 'hidden')};
     transition: var(--transition);
   }
 
@@ -162,59 +162,64 @@ const Menu = () => {
 
   const buttonRef = useRef(null);
   const navRef = useRef(null);
+  const menuFocusablesRef = useRef([]);
+  const firstFocusableElRef = useRef(null);
+  const lastFocusableElRef = useRef(null);
 
-  let menuFocusables;
-  let firstFocusableEl;
-  let lastFocusableEl;
+  const setFocusables = useCallback(() => {
+    menuFocusablesRef.current = [
+      buttonRef.current,
+      ...Array.from(navRef.current.querySelectorAll('a')),
+    ];
+    firstFocusableElRef.current = menuFocusablesRef.current[0];
+    lastFocusableElRef.current = menuFocusablesRef.current[menuFocusablesRef.current.length - 1];
+  }, []);
 
-  const setFocusables = () => {
-    menuFocusables = [buttonRef.current, ...Array.from(navRef.current.querySelectorAll('a'))];
-    firstFocusableEl = menuFocusables[0];
-    lastFocusableEl = menuFocusables[menuFocusables.length - 1];
-  };
-
-  const handleBackwardTab = e => {
-    if (document.activeElement === firstFocusableEl) {
+  const handleBackwardTab = useCallback((e) => {
+    if (document.activeElement === firstFocusableElRef.current) {
       e.preventDefault();
-      lastFocusableEl.focus();
+      lastFocusableElRef.current.focus();
     }
-  };
+  }, []);
 
-  const handleForwardTab = e => {
-    if (document.activeElement === lastFocusableEl) {
+  const handleForwardTab = useCallback((e) => {
+    if (document.activeElement === lastFocusableElRef.current) {
       e.preventDefault();
-      firstFocusableEl.focus();
+      firstFocusableElRef.current.focus();
     }
-  };
+  }, []);
 
-  const onKeyDown = e => {
-    switch (e.key) {
-      case KEY_CODES.ESCAPE:
-      case KEY_CODES.ESCAPE_IE11: {
-        setMenuOpen(false);
-        break;
-      }
-
-      case KEY_CODES.TAB: {
-        if (menuFocusables && menuFocusables.length === 1) {
-          e.preventDefault();
+  const onKeyDown = useCallback(
+    (e) => {
+      switch (e.key) {
+        case KEY_CODES.ESCAPE:
+        case KEY_CODES.ESCAPE_IE11: {
+          setMenuOpen(false);
           break;
         }
-        if (e.shiftKey) {
-          handleBackwardTab(e);
-        } else {
-          handleForwardTab(e);
+
+        case KEY_CODES.TAB: {
+          if (menuFocusablesRef.current && menuFocusablesRef.current.length === 1) {
+            e.preventDefault();
+            break;
+          }
+          if (e.shiftKey) {
+            handleBackwardTab(e);
+          } else {
+            handleForwardTab(e);
+          }
+          break;
         }
-        break;
-      }
 
-      default: {
-        break;
+        default: {
+          break;
+        }
       }
-    }
-  };
+    },
+    [handleBackwardTab, handleForwardTab],
+  );
 
-  const onResize = e => {
+  const onResize = (e) => {
     if (e.currentTarget.innerWidth > 768) {
       setMenuOpen(false);
     }
@@ -230,7 +235,7 @@ const Menu = () => {
       document.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('resize', onResize);
     };
-  }, []);
+  }, [onKeyDown, setFocusables]);
 
   const wrapperRef = useRef();
   useOnClickOutside(wrapperRef, () => setMenuOpen(false));
@@ -246,7 +251,8 @@ const Menu = () => {
           onClick={toggleMenu}
           menuOpen={menuOpen}
           ref={buttonRef}
-          aria-label="Menu">
+          aria-label="Menu"
+        >
           <div className="ham-box">
             <div className="ham-box-inner" />
           </div>
