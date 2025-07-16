@@ -135,10 +135,10 @@ const About = () => {
         <StyledText>
           <div>
             <p>
-              Hello! I'm Adi, a rising senior at UT studying CS and Math. Outside of class,
-              depending on whether I am in Austin or Dallas, you may find at a nearby Chipotle or
-              thai restaurant. I enjoy playing pickleball, watching movies, and keeping up with the
-              financial market.
+              Hi! I'm Adi, a rising senior at UT studying Computer Science and Math. When I'm not in
+              class, you might just find me at a local Chipotle or Thai restaurant, depending on
+              whether I'm in Austin or Dallas. I enjoy playing pickleball, watching movies, and
+              following the financial markets.
             </p>
 
             {/* <p>
@@ -146,7 +146,7 @@ const About = () => {
               <a href="https://wellsfargo.com/">a moderately-sized bank</a>,{' '}
             </p> */}
 
-            <p>Here are a few technologies I’ve been dabbling with recently:</p>
+            <p>Here are a few technologies I’ve been working with recently:</p>
           </div>
 
           <ul className="skills-list">
